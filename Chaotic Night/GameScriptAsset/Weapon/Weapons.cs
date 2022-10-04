@@ -13,6 +13,7 @@ namespace Chaotic_Night
         public Texture2D WeaponTexture;
         protected Rectangle HitZone;
         protected Vector2 Origin;
+        protected List<Bullet> Bullets;
         //protected Matrix HitZoneTransform;
         protected Vector2 HitzonePos;
         protected int HitCount;
@@ -20,21 +21,25 @@ namespace Chaotic_Night
         protected int FramePosY = 0;
         protected int offsetX;
         protected int offsetY;
-        private float Rot;
+        protected float Rot;
         public int Damage=25;
         public int CooldownLimit=3;
         private float TotalCooldown;
         public SpriteBatch _SB;
         protected float TimePerFrame = (float)1/20;
+        protected int FrameEnd;
+        protected Vector2 TexOrigin;
         float TotalElapsed;
         public Character Owner;
         public bool Attacking = false;
         public bool Fliped = false;
+        public bool UpdateAnim = false;
         public Weapons(Character OwningCharacter)
         {
             Owner = OwningCharacter;
             offsetX = 32;
             offsetY = 32;
+            TexOrigin = new Vector2(16, 32);
             UpdateOrigin(Owner);
         }
         public virtual void Attack()
@@ -65,16 +70,16 @@ namespace Chaotic_Night
                 Attacking = true;
             }
         }
-        public void DrawAttackAnim(float Rot,Vector2 CamPos)
+        public virtual void DrawAttackAnim(float Rot,Vector2 CamPos)
         {
             this.Rot = Rot;
-            if(Rot<=-1.57||Rot>=1.57)
+            if(Fliped==true)
             {
-                _SB.Draw(WeaponTexture, Origin-CamPos, new Rectangle(FramePosX*64, FramePosY* 64, 64, 64), Color.White, Rot, new Vector2(16, 32), 1.0f, SpriteEffects.None, (float)0.5);
+                _SB.Draw(WeaponTexture, Origin-CamPos, new Rectangle(FramePosX*64, FramePosY* 64, 64, 64), Color.White, Rot, TexOrigin, 1.0f, SpriteEffects.FlipHorizontally, (float)0.5);
             }
             else
             {
-                _SB.Draw(WeaponTexture, Origin-CamPos, new Rectangle(FramePosX * 64, FramePosY* 64, 64, 64), Color.White, Rot, new Vector2(16, 32), 1.0f, SpriteEffects.None, (float)0.5);
+                _SB.Draw(WeaponTexture, Origin-CamPos, new Rectangle(FramePosX * 64, FramePosY* 64, 64, 64), Color.White, Rot, TexOrigin, 1.0f, SpriteEffects.None, (float)0.5);
             }
             if(Rot > -1.04 && Rot < 0)
             {
@@ -107,7 +112,7 @@ namespace Chaotic_Night
                 offsetY = 32;
             }
         }
-        public void Load(ContentManager Content, SpriteBatch SB)
+        public virtual void Load(ContentManager Content, SpriteBatch SB)
         {
             _SB = SB;
             WeaponTexture = Content.Load<Texture2D>("sword_1-Sheet");
@@ -122,13 +127,14 @@ namespace Chaotic_Night
                 FramePosX = (FramePosX + 1) % 8;
                 TotalElapsed -= TimePerFrame;
             }
-            if(FramePosX>=7)
+            if(FramePosX>=FrameEnd)
             {
                 FramePosX = 0;
                 Attacking = false;
+                UpdateAnim = false;
             }
         }
-        public void UpdateWeapon(float time)
+        public virtual void UpdateWeapon(float time)
         {
             if(Attacking==true)
             {
@@ -139,6 +145,7 @@ namespace Chaotic_Night
                 else
                 {
                     Attacking = false;
+                    UpdateAnim = false;
                     TotalCooldown -= CooldownLimit;
                 }
             }
@@ -225,7 +232,7 @@ namespace Chaotic_Night
 
             HitZone = new Rectangle((int)HitzonePos.X, (int)HitzonePos.Y, 64, 64);
         }
-        protected bool CheckHit(Character Target)
+        public virtual bool CheckHit(Character Target)
         {
             return HitZone.Intersects(Target.GetHitbox());
         }
@@ -248,6 +255,10 @@ namespace Chaotic_Night
         public void UpdateOrigin(Character Owner)
         {
             Origin = Owner.GetPos() + new Vector2(32, 32);
+        }
+        public virtual List<Bullet> GetBullets()
+        {
+            return Bullets;
         }
     }
 }

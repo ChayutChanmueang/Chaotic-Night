@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Chaotic_Night
 {
-    class GameObject
+    public class GameObject
     {
         protected Texture2D ObjectTexture;
         protected Vector2 ObjectPos;

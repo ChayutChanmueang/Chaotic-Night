@@ -51,8 +51,11 @@ namespace Chaotic_Night
         }
         public void DoM2Action(Character Target)
         {
+            if (SP >= 25)
+            {
+                SP -= 25;
+            }
             HoldedWeapon.SpecialAttack(Target);
-            SP -= 25;
         }
         public bool GetAttacking()
         {

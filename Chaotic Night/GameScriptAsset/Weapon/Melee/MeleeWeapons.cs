@@ -13,17 +13,23 @@ namespace Chaotic_Night
         public MeleeWeapons(Character OwningCharacter) : base(OwningCharacter)
         {
             Owner = OwningCharacter;
+            FrameEnd = 7;
         }
         public override void Attack(Character Target)
         {
             if (Attacking == false)
             {
-                Attacking = true;
                 AllowCombo = true;
                 if (CheckHit(Target))
                 {
                     Target.SubtraceHP(Damage);
                     HitCount++;
+                    UpdateAnim = true;
+                }
+                else
+                {
+                    UpdateAnim = true;
+                    Attacking = false;
                 }
             }
         }
@@ -31,12 +37,17 @@ namespace Chaotic_Night
         {
             if (Attacking == false)
             {
-                Attacking = true;
                 AllowCombo = true;
                 if (CheckHit(Target))
                 {
                     Target.SubtraceHP(Damage*2);
                     HitCount++;
+                    UpdateAnim = true;
+                }
+                else
+                {
+                    UpdateAnim = true;
+                    Attacking = false;
                 }
             }
         }
