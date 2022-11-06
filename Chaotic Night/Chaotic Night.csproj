@@ -8,17 +8,43 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <ApplicationIcon>Icon.ico</ApplicationIcon>
+    <ApplicationIcon>Chaotic_Night_Icon.ico</ApplicationIcon>
+    <Nullable>annotations</Nullable>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningLevel>3</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <TrimmerRootAssembly Include="Microsoft.Xna.Framework.Content.ContentTypeReader" Visible="false" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MonoGame.Extended" Version="3.8.0" />
+    <PackageReference Include="MonoGame.Extended.Animations" Version="3.7.0" />
+    <PackageReference Include="MonoGame.Extended.Collisions" Version="3.8.0" />
+    <PackageReference Include="MonoGame.Extended.Content.Pipeline" Version="3.8.0" />
+    <PackageReference Include="MonoGame.Extended.Graphics" Version="3.8.0" />
+    <PackageReference Include="MonoGame.Extended.Tiled" Version="3.8.0" />
     <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1641" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
+    <PackageReference Include="RoyT.AStar" Version="3.0.2" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="GameScriptAsset\Weapon\Enemy_Weapon\" />
   </ItemGroup>
 </Project>
