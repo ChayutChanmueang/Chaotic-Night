@@ -417,5 +417,10 @@ namespace Chaotic_Night
         {
             return PF.FindPath(new GridPosition((int)CharacterPos.X, (int)CharacterPos.Y), new GridPosition((int)CharacterPos.X, (int)CharacterPos.Y), grid);
         }
+
+        public virtual Path FindPath(Vector2 Destination,Grid grid)
+        {
+            return PF.FindPath(new GridPosition((int)CharacterPos.X, (int)CharacterPos.Y), new GridPosition((int)CharacterPos.X, (int)CharacterPos.Y), grid);
+        }
     }
 }

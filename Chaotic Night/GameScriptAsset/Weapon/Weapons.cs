@@ -359,5 +359,9 @@ namespace Chaotic_Night
                 }
             }
         }
+        public virtual List<Bullet> GetBullets()
+        {
+            return Bullets;
+        }
     }
 }
