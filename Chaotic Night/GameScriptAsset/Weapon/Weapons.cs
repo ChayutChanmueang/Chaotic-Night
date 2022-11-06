@@ -8,46 +8,34 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Chaotic_Night
 {
-    public class Weapons
+    class Weapons
     {
         public Texture2D WeaponTexture;
         protected Rectangle HitZone;
         protected Vector2 Origin;
-        protected List<Bullet> Bullets;
-        public List<PopUpDamage> Damages = new List<PopUpDamage>();
-        Random RAND;
         //protected Matrix HitZoneTransform;
         protected Vector2 HitzonePos;
         protected int HitCount;
-        public int FramePosX = 0;
-        public int FramePosY = 0;
+        protected int FramePosX = 0;
+        protected int FramePosY = 0;
         protected int offsetX;
         protected int offsetY;
-        protected float Rot;
-        protected int BaseDamage=25;
-        protected int BaseSAtkDamage = 50;
-        public int SAtkCost = 25;
-        public int Damage;
-        public float CooldownLimit=3;
-        protected float TotalCooldown;
+        private float Rot;
+        public int Damage=25;
+        public int CooldownLimit=3;
+        private float TotalCooldown;
         public SpriteBatch _SB;
-        protected float TimePerFrame = (float)1/15;
-        public int FrameEnd;
-        protected Vector2 TexOrigin;
-        protected float TotalElapsed;
+        protected float TimePerFrame = (float)1/20;
+        float TotalElapsed;
         public Character Owner;
         public bool Attacking = false;
         public bool Fliped = false;
-        public bool UpdateAnim = false;
-        public bool SAtkCharging = false;
         public Weapons(Character OwningCharacter)
         {
             Owner = OwningCharacter;
             offsetX = 32;
             offsetY = 32;
-            TexOrigin = new Vector2(16, 32);
             UpdateOrigin(Owner);
-            RAND = new Random();
         }
         public virtual void Attack()
         {
@@ -77,78 +65,70 @@ namespace Chaotic_Night
                 Attacking = true;
             }
         }
-        public virtual void DrawAttackAnim(float Rot,Vector2 CamPos)
+        public void DrawAttackAnim(float Rot,Vector2 CamPos)
         {
             this.Rot = Rot;
-            if(Fliped==true)
+            if(Rot<=-1.57||Rot>=1.57)
             {
-                _SB.Draw(WeaponTexture, (Origin) -CamPos, new Rectangle(FramePosX*64, FramePosY* 64, 64, 64), Color.White, Rot, Vector2.Zero, 1.0f, SpriteEffects.FlipHorizontally, (float)0.5);
+                _SB.Draw(WeaponTexture, Origin-CamPos, new Rectangle(FramePosX*64, FramePosY* 64, 64, 64), Color.White, Rot, new Vector2(16, 32), 1.0f, SpriteEffects.None, (float)0.5);
             }
             else
             {
-                _SB.Draw(WeaponTexture, (Origin)-CamPos, new Rectangle(FramePosX * 64, FramePosY* 64, 64, 64), Color.White, Rot, Vector2.Zero, 1.0f, SpriteEffects.None, (float)0.5);
+                _SB.Draw(WeaponTexture, Origin-CamPos, new Rectangle(FramePosX * 64, FramePosY* 64, 64, 64), Color.White, Rot, new Vector2(16, 32), 1.0f, SpriteEffects.None, (float)0.5);
             }
             if(Rot > -1.04 && Rot < 0)
             {
                 offsetX = 32;
                 offsetY = -32;
-                HitZone = new Rectangle((int)HitzonePos.X, (int)HitzonePos.Y, 64, 96);
             }
             else if (Rot > -2.08 && Rot < -1.04)
             {
                 offsetX = 0;
                 offsetY = -32;
-                HitZone = new Rectangle((int)HitzonePos.X, (int)HitzonePos.Y, 64, 64);
             }
             else if (Rot > -3.14 && Rot < -2.08)
             {
                 offsetX = -32;
                 offsetY = -32;
-                HitZone = new Rectangle((int)HitzonePos.X, (int)HitzonePos.Y, 64, 96);
             }
             else if (Rot < 1.04 && Rot > 0)
             {
                 offsetX = 32;
                 offsetY = 32;
-                HitZone = new Rectangle((int)HitzonePos.X, (int)HitzonePos.Y, 64, 96);
             }
             else if (Rot < 2.08 && Rot > 1.04)
             {
                 offsetX = 0;
                 offsetY = 32;
-                HitZone = new Rectangle((int)HitzonePos.X, (int)HitzonePos.Y, 64, 64);
             }
             else if (Rot < 3.14 && Rot > 2.08)
             {
                 offsetX = -32;
                 offsetY = 32;
-                HitZone = new Rectangle((int)HitzonePos.X, (int)HitzonePos.Y, 64, 96);
             }
         }
-        public virtual void Load(ContentManager Content, SpriteBatch SB)
+        public void Load(ContentManager Content, SpriteBatch SB)
         {
             _SB = SB;
-            WeaponTexture = Content.Load<Texture2D>("Combo-1_2_25_3");
+            WeaponTexture = Content.Load<Texture2D>("sword_1-Sheet");
             UpdateHitboxTransformMatrix(Rot);
             UpdateHitzone();
         }
-        public virtual void UpdateFrame (float time)
+        public void UpdateFrame (float time)
         {
             TotalElapsed += time;
-            if (TotalElapsed > TimePerFrame)
+            if(TotalElapsed>TimePerFrame)
             {
                 FramePosX = (FramePosX + 1) % 8;
                 TotalElapsed -= TimePerFrame;
             }
-            if (FramePosX >= FrameEnd)
+            if(FramePosX>=7)
             {
                 FramePosX = 0;
                 Attacking = false;
-                UpdateAnim = false;
             }
-
         }
-        public virtual void UpdateWeapon(float time)
+        public void UpdateWeapon(float time)
         {
             if(Attacking==true)
             {
@@ -158,8 +138,7 @@ namespace Chaotic_Night
                 }
                 else
                 {
-                   Attacking = false;
-                    UpdateAnim = false;
+                    Attacking = false;
                     TotalCooldown -= CooldownLimit;
                 }
             }
@@ -178,7 +157,7 @@ namespace Chaotic_Night
         {
             return Attacking;
         }
-        public virtual void UpdateHitboxTransformMatrix(float Rot)
+        public void UpdateHitboxTransformMatrix(float Rot)
         {
             /*Vector2 Ori = new Vector2(32, 32);
             Vector2 Pos = new Vector2(Owner.GetPos().X + offsetX, Owner.GetPos().Y+offsetY );
@@ -186,66 +165,33 @@ namespace Chaotic_Night
                                Matrix.CreateScale((float)0.25) * Matrix.CreateRotationZ(Rot) *
                                Matrix.CreateTranslation(new Vector3(Pos,0));*/
 
-            /*if(Rot>=-2.335&&Rot<=-0.785)
+            if(Rot>=-2.335&&Rot<=-0.785)
             {
-                HitzonePos = new Vector2(Owner.WeaponPos.X + (Owner.CharacterWidth / 2), Owner.WeaponPos.Y- (Owner.CharacterHeight / 2));
+                HitzonePos = new Vector2(Owner.WeaponPos.X + 16, Owner.WeaponPos.Y-32);
             }
-            if (Rot > -0.785 && Rot <= 0) //45 Deg
+            if (Rot > -0.785 && Rot <= 0)
             {
-                HitzonePos = new Vector2(Owner.WeaponPos.X + Owner.CharacterWidth, Owner.WeaponPos.Y - (Owner.CharacterHeight / 2));
+                HitzonePos = new Vector2(Owner.WeaponPos.X + 32, Owner.WeaponPos.Y - 32);
             }
             if (Rot >= -3.14 && Rot < -2.335)
             {
-                HitzonePos = new Vector2(Owner.WeaponPos.X, Owner.WeaponPos.Y - (Owner.CharacterHeight / 2));
+                HitzonePos = new Vector2(Owner.WeaponPos.X, Owner.WeaponPos.Y - 32);
             }
             if (Rot > 0 && Rot <= 0.785)
             {
-                HitzonePos = new Vector2(Owner.WeaponPos.X + Owner.CharacterWidth, Owner.WeaponPos.Y + (Owner.CharacterHeight / 2));
-                if(Owner.GetType() == typeof(PlayableCharacter))
-                {
-                    HitzonePos = new Vector2(Owner.WeaponPos.X + Owner.CharacterWidth, Owner.WeaponPos.Y + 30);
-                }
+                HitzonePos = new Vector2(Owner.WeaponPos.X + 32, Owner.WeaponPos.Y + 16);
             }
             if (Rot > 0.785 && Rot <= 2.355)
             {
-                HitzonePos = new Vector2(Owner.WeaponPos.X + (Owner.CharacterWidth / 2), Owner.WeaponPos.Y + (Owner.CharacterHeight / 2));
+                HitzonePos = new Vector2(Owner.WeaponPos.X +16 , Owner.WeaponPos.Y + 16);
             }
             if (Rot > 2.355 && Rot <= 3.14)
             {
-                HitzonePos = new Vector2(Owner.WeaponPos.X , Owner.WeaponPos.Y + (Owner.CharacterHeight / 2));
-                if (Owner.GetType() == typeof(PlayableCharacter))
-                {
-                    HitzonePos = new Vector2(Owner.WeaponPos.X, Owner.WeaponPos.Y + 30);
-                }
-            }*/
-
-            if (Rot > -1.04 && Rot < 0) //60
-            {
-                HitzonePos = new Vector2(Owner.WeaponPos.X+Owner.CharacterWidth/1.25f, Owner.WeaponPos.Y);
-            }
-            else if (Rot > -2.08 && Rot < -1.04) //120
-            {
-                HitzonePos = new Vector2(Owner.WeaponPos.X + Owner.CharacterWidth/2.5f, Owner.WeaponPos.Y);
-            }
-            else if (Rot > -3.14 && Rot < -2.08) //180
-            {
-                HitzonePos = new Vector2(Owner.WeaponPos.X, Owner.WeaponPos.Y);
-            }
-            else if (Rot < 1.04 && Rot > 0) //-60
-            {
-                HitzonePos = new Vector2(Owner.WeaponPos.X + Owner.CharacterWidth/1.25f, Owner.WeaponPos.Y+Owner.CharacterHeight/2);
-            }
-            else if (Rot < 2.08 && Rot > 1.04) //-120
-            {
-                HitzonePos = new Vector2(Owner.WeaponPos.X + Owner.CharacterWidth / 2.25f, Owner.WeaponPos.Y + Owner.CharacterHeight/2);
-            }
-            else if (Rot < 3.14 && Rot > 2.08) //-180
-            {
-                HitzonePos = new Vector2(Owner.WeaponPos.X, Owner.WeaponPos.Y + Owner.CharacterHeight/2);
+                HitzonePos = new Vector2(Owner.WeaponPos.X , Owner.WeaponPos.Y + 16);
             }
 
         }
-        protected virtual void UpdateHitzone()
+        protected void UpdateHitzone()
         {
             /*Vector2 TopLeft = Vector2.Transform(Vector2.Zero, HitZoneTransform);
             Vector2 TopRight = Vector2.Transform(new Vector2(Origin.X, 0), HitZoneTransform);
@@ -276,36 +222,10 @@ namespace Chaotic_Night
             }
 
             HitZone = new Rectangle((int)min.X, (int)min.Y, 64, 64);*/
+
             HitZone = new Rectangle((int)HitzonePos.X, (int)HitzonePos.Y, 64, 64);
-            if(Owner.GetType()==typeof(PlayableCharacter))
-            {
-                if (Rot > -1.04 && Rot < 0)
-                {
-                    HitZone = new Rectangle((int)HitzonePos.X, (int)HitzonePos.Y, 64, 96);
-                }
-                else if (Rot > -2.08 && Rot < -1.04)
-                {
-                    HitZone = new Rectangle((int)HitzonePos.X, (int)HitzonePos.Y, 64, 96);
-                }
-                else if (Rot > -3.14 && Rot < -2.08)
-                {
-                    HitZone = new Rectangle((int)HitzonePos.X, (int)HitzonePos.Y, 64, 96);
-                }
-                else if (Rot < 1.04 && Rot > 0)
-                {
-                    HitZone = new Rectangle((int)HitzonePos.X, (int)HitzonePos.Y, 64, 96);
-                }
-                else if (Rot < 2.08 && Rot > 1.04)
-                {
-                    HitZone = new Rectangle((int)HitzonePos.X, (int)HitzonePos.Y, 64, 96);
-                }
-                else if (Rot < 3.14 && Rot > 2.08)
-                {
-                    HitZone = new Rectangle((int)HitzonePos.X, (int)HitzonePos.Y, 64, 96);
-                }
-            }
         }
-        public virtual bool CheckHit(Character Target)
+        protected bool CheckHit(Character Target)
         {
             return HitZone.Intersects(Target.GetHitbox());
         }
@@ -327,37 +247,7 @@ namespace Chaotic_Night
         }
         public void UpdateOrigin(Character Owner)
         {
-            Origin = Owner.GetOrigin();
-        }
-        public virtual List<Bullet> GetBullets()
-        {
-            return Bullets;
-        }
-        protected void CalculateDamage()
-        {
-            Damage = RAND.Next(BaseDamage - 2, BaseDamage + 5)-(int)Owner._game.PlayerRelic.MeleeDamageResistance;
-            if(Owner.GetType()==typeof(PlayableCharacter))
-            {
-                Damage = (int)(RAND.Next(BaseDamage - 2, BaseDamage + 5) * Owner._game.LVDamageMuti);
-            }
-        }
-        protected void CalculateDamage(int _BaseDamage)
-        {
-            Damage = RAND.Next(_BaseDamage - 2, _BaseDamage + 5);
-            if (Owner.GetType() == typeof(PlayableCharacter))
-            {
-                Damage = (int)(RAND.Next(_BaseDamage - 2, _BaseDamage + 5) * Owner._game.LVDamageMuti);
-            }
-        }
-        public void ClearBullet()
-        {
-            if(Bullets!=null)
-            {
-                for (int i = Bullets.Count; i > 0; i--)
-                {
-                    Bullets.RemoveAt(i - 1);
-                }
-            }
+            Origin = Owner.GetPos() + new Vector2(32, 32);
         }
         public virtual List<Bullet> GetBullets()
         {

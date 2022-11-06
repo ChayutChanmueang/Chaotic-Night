@@ -8,22 +8,19 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Chaotic_Night
 {
-    public class Camera
+    class Camera
     {
-        public Vector2 CamPos;
-        int ScreenW;
-        int ScreenH;
-        public Camera(int ScreenW,int ScreenH)
+        Vector2 CamPos;
+        public Camera()
         {
             CamPos = Vector2.Zero;
-            this.ScreenW = ScreenW;
-            this.ScreenH = ScreenH;
         }
         public void GoTo(Vector2 WTargetPos)
         {
-            Vector2 CamTargetPos = WTargetPos - new Vector2(ScreenW/2,ScreenH/2);
+            Vector2 STargetPos = WTargetPos - new Vector2(1920/2,1080/2);
 
-            CamPos = Vector2.Lerp(CamPos, CamTargetPos, 0.3f);
+            CamPos = Vector2.Lerp(CamPos, STargetPos, 0.3f);
+            //CamPos = new Vector2(WTargetPos.X - (1920 / 2), WTargetPos.Y - (1080 / 2));
         }
         public void FollowCharacter(Character Target)
         {

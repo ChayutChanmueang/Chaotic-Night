@@ -4,44 +4,35 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended;
-using MonoGame.Extended.Collisions;
 
 namespace Chaotic_Night
 {
-    public class MovableCharacter : Character
+    class MovableCharacter : Character
     {
         protected int Speed;
-        public int SP = 100;
-        public MovableCharacter(Game1 game) : base(game)
+        protected int SP = 25;
+        public MovableCharacter() : base()
         {
             CharacterPos = Vector2.Zero;
             HealthPoint = 100;
             Speed = 10;
         }
-        public MovableCharacter(Game1 game, Vector2 Pos) : base(game, Pos)
+        public MovableCharacter(Vector2 Pos) : base(Pos)
         {
             CharacterPos = Pos;
             HealthPoint = 100;
             Speed = 10;
         }
-        public MovableCharacter(Game1 game, int Health) : base(game ,Health)
+        public MovableCharacter(int Health) : base(Health)
         {
             CharacterPos = Vector2.Zero;
             HealthPoint = Health;
             Speed = 10;
         }
-        public MovableCharacter(Game1 game, Vector2 Pos,int Health) : base(game, Pos,Health)
+        public MovableCharacter(Vector2 Pos,int Health) : base(Pos,Health)
         {
             CharacterPos = Pos;
             HealthPoint = Health;
-            Speed = 10;
-        }
-        public MovableCharacter(Game1 game, Vector2 Pos, int Health, int SkillPoint) : base(game,Pos,Health,SkillPoint)
-        {
-            CharacterPos = Pos;
-            HealthPoint = Health;
-            SP = SkillPoint;
             Speed = 10;
         }
 
@@ -53,65 +44,53 @@ namespace Chaotic_Night
         {
             return Speed;
         }
-        public virtual void MoveUp()
+        public void MoveUp()
         {
             CharacterPos.Y -= Speed;
             WeaponPos.Y = CharacterPos.Y + 16;
         }
-        public virtual void MoveUp(int Amount)
+        public void MoveUp(int Amount)
         {
             CharacterPos.Y -= Amount;
             WeaponPos.Y = CharacterPos.Y + 16;
         }
-        public virtual void MoveDown()
+        public void MoveDown()
         {
             CharacterPos.Y += Speed;
             WeaponPos.Y = CharacterPos.Y + 16;
         }
-        public virtual void MoveDown(int Amount)
+        public void MoveDown(int Amount)
         {
             CharacterPos.Y += Amount;
             WeaponPos.Y = CharacterPos.Y + 16;
         }
-        public virtual void MoveLeft()
+        public void MoveLeft()
         {
             CharacterPos.X -= Speed;
             Fliped = true;
             WeaponPos.X = CharacterPos.X - 16;
         }
-        public virtual void MoveLeft(int Amount)
+        public void MoveLeft(int Amount)
         {
             CharacterPos.X -= Amount;
             Fliped = true;
             WeaponPos.X = CharacterPos.X - 16;
         }
-        public virtual void MoveRight()
+        public void MoveRight()
         {
             CharacterPos.X += Speed;
             Fliped = false;
             WeaponPos.X = CharacterPos.X - 16;
         }
-        public virtual void MoveRight(int Amount)
+        public void MoveRight(int Amount)
         {
             CharacterPos.X += Amount;
             Fliped = false;
             WeaponPos.X = CharacterPos.X - 16;
         }
-        public override int GetSP()
+        public int GetSP()
         {
             return SP;
-        }
-        public override void AddSP(int Amount)
-        {
-            if ((SP + Amount) < 100)
-            {
-                SP += Amount;
-            }
-            else if ((SP + Amount) > 100)
-            {
-                Amount = 100 - SP;
-                SP += Amount;
-            }
         }
     }
 }
